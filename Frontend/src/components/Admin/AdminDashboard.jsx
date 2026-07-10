@@ -13,6 +13,8 @@ import {
 
 import "./AdminDashboard.css";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
   const [filter, setFilter] = useState("all");
@@ -22,7 +24,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/auth/getusers");
+        const res = await axios.get(`${API_URL}/api/auth/getusers`);
         setUsers(res.data);
       } catch (error) {
         console.error("Error fetching users:", error);
@@ -35,7 +37,7 @@ const AdminDashboard = () => {
   const handleApprove = async (id) => {
     try {
       await axios.put(
-        "http://localhost:5000/api/auth/updateStatus",
+        `${API_URL}/api/auth/updateStatus`,
         { userId: id, status: "active" } // Change status to active
       );
 
@@ -52,7 +54,7 @@ const AdminDashboard = () => {
   const handleDisable = async (id) => {
     try {
       await axios.put(
-        "http://localhost:5000/api/auth/updateStatus",
+        `${API_URL}/api/auth/updateStatus`,
         { userId: id, status: "disabled" } // Change status to disabled
       );
 

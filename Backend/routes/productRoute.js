@@ -1,19 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const multer = require("multer");
-const path = require("path");
 const Product = require("../models/Product");
-
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
-});
-
-const upload = multer({ storage: storage });
+const upload = require("../middlewares/upload");
+const cloudinary = require("../config/cloudinary");
 
 // Add Product Route
 router.post("/addproduct", upload.single("ProImage"), async (req, res) => {
@@ -29,7 +18,7 @@ router.post("/addproduct", upload.single("ProImage"), async (req, res) => {
       Quantity,
       ExpiryDate,
     } = req.body;
-    const ProImage = req.file ? req.file.filename : null;
+    const ProImage = req.file ? req.file.path : null;
 
     // Check if a product with the same barcode or name already exists
     const existingProduct = await Product.findOne({
@@ -81,7 +70,7 @@ router.put(
         Quantity,
         ExpiryDate,
       } = req.body;
-      const ProImage = req.file ? req.file.filename : undefined;
+      const ProImage = req.file ? req.file.path : undefined;
 
       const updatedData = {
         Probarcode,
@@ -95,6 +84,15 @@ router.put(
         ExpiryDate,
       };
       if (ProImage) updatedData.ProImage = ProImage;
+
+      // If a new image was uploaded, remove the previous one from Cloudinary.
+      if (req.file) {
+        const existing = await Product.findById(req.params.id);
+        const oldPublicId = upload.publicIdFromUrl(existing && existing.ProImage);
+        if (oldPublicId) {
+          await cloudinary.uploader.destroy(oldPublicId).catch(() => {});
+        }
+      }
 
       const updatedProduct = await Product.findByIdAndUpdate(
         req.params.id,
@@ -123,6 +121,12 @@ router.delete("/deleteproduct/:id", async (req, res) => {
 
     if (!deletedProduct) {
       return res.status(404).json({ message: "Product not found" });
+    }
+
+    // Remove the product image from Cloudinary too.
+    const publicId = upload.publicIdFromUrl(deletedProduct.ProImage);
+    if (publicId) {
+      await cloudinary.uploader.destroy(publicId).catch(() => {});
     }
 
     res.status(200).json({ message: "Product deleted successfully" });

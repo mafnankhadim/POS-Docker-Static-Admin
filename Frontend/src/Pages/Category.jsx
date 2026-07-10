@@ -4,6 +4,8 @@ import { FaEdit, FaTrash } from "react-icons/fa";
 import axios from "axios";
 import "../Styles/Category.css";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const Category = () => {
   const [searchText, setSearchText] = useState("");
   const [categories, setCategories] = useState([]);
@@ -21,7 +23,7 @@ const Category = () => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/category/getcategories"
+          `${API_URL}/api/category/getcategories`
         );
         if (response.data && response.data.categories) {
           setCategories(response.data.categories);
@@ -49,7 +51,7 @@ const Category = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/category/addcategory",
+        `${API_URL}/api/category/addcategory`,
         { categoryName: newCategoryName }
       );
 
@@ -74,7 +76,7 @@ const Category = () => {
 
     try {
       const response = await axios.put(
-        `http://localhost:5000/api/category/updatecategory/${selectedCategory._id}`,
+        `${API_URL}/api/category/updatecategory/${selectedCategory._id}`,
         { categoryName: updatedCategoryName }
       );
 
@@ -101,7 +103,7 @@ const Category = () => {
 
     try {
       const response = await axios.delete(
-        `http://localhost:5000/api/category/deletecategory/${id}`
+        `${API_URL}/api/category/deletecategory/${id}`
       );
       setCategories((prevCategories) =>
         prevCategories.filter((category) => category._id !== id)

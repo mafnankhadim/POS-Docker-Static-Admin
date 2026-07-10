@@ -6,6 +6,8 @@ import { FaTrash } from "react-icons/fa";
 import placeholderImage from "../assets/images/product-placeholder.jpg";
 import logo from "../assets/images/black-pos-logo.png";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const Newsale = () => {
   const [search, setSearch] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
@@ -38,7 +40,7 @@ const Newsale = () => {
   const fetchInvoiceData = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:5000/api/invoice/getinvoice/${id}`
+        `${API_URL}/api/invoice/getinvoice/${id}`
       );
       const data = await response.json();
 
@@ -82,14 +84,14 @@ const Newsale = () => {
 
   // Fetch products from the API
   useEffect(() => {
-    fetch("http://localhost:5000/api/product/getproducts")
+    fetch(`${API_URL}/api/product/getproducts`)
       .then((response) => response.json())
       .then((data) => {
         const productsFromAPI = data.products.map((product) => ({
           id: product._id,
           name: product.ProductName,
           image: product.ProImage
-            ? `http://localhost:5000/uploads/${product.ProImage}`
+            ? product.ProImage
             : placeholderImage,
           retailprice: product.RetailPrice,
           costprice: product.CostPrice,
@@ -115,7 +117,7 @@ const Newsale = () => {
     const fetchUser = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/auth/getuser",
+          `${API_URL}/api/auth/getuser`,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`, // Include token if needed
@@ -275,7 +277,7 @@ const Newsale = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/detail/getDetail")
+      .get(`${API_URL}/api/detail/getDetail`)
       .then((response) => {
         if (response.data.length > 0) {
           setStoreDetails(response.data[0]); // Assuming there's only one store detail
@@ -484,7 +486,7 @@ const Newsale = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/invoice/addinvoice",
+        `${API_URL}/api/invoice/addinvoice`,
         {
           method: "POST",
           headers: {
@@ -521,7 +523,6 @@ const Newsale = () => {
         setCustomerName("");
         setCustomerContactNo("");
         setCart([]);
-        alert("Invoice added successfully!");
 
         // Pass the updated data to the print function
         handlePrintInvoice(updatedInvoiceData);
@@ -597,7 +598,7 @@ const Newsale = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/invoice/updateinvoice/${invoiceId}`,
+        `${API_URL}/api/invoice/updateinvoice/${invoiceId}`,
         {
           method: "PUT",
           headers: {

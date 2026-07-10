@@ -4,6 +4,8 @@ import axios from "axios";
 import { FaEdit, FaTrash, FaEye } from "react-icons/fa";
 import "../Styles/Product.css";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const Product = () => {
   const [searchText, setSearchText] = useState("");
   const [data, setData] = useState([]);
@@ -53,7 +55,7 @@ const Product = () => {
     const fetchCategories = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/category/getcategories"
+          `${API_URL}/api/category/getcategories`
         );
         const data = await response.json();
         if (response.ok) {
@@ -118,7 +120,7 @@ const Product = () => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/product/getproducts"
+          `${API_URL}/api/product/getproducts`
         );
         setData(response.data.products);
       } catch (error) {
@@ -134,7 +136,7 @@ const Product = () => {
     if (window.confirm("Are you sure you want to delete this product?")) {
       try {
         await axios.delete(
-          `http://localhost:5000/api/product/deleteproduct/${id}`
+          `${API_URL}/api/product/deleteproduct/${id}`
         );
         setData(data.filter((product) => product._id !== id));
       } catch (error) {
@@ -176,7 +178,7 @@ const Product = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5000/api/product/addproduct",
+        `${API_URL}/api/product/addproduct`,
         {
           method: "POST",
           body: formData,
@@ -188,9 +190,20 @@ const Product = () => {
       if (response.ok) {
         alert("Product added successfully!");
 
+        setBarcode("");
+        setProductName("");
+        setCategory("");
+        setCompany("");
+        setRetailPrice("");
+        setCostPrice("");
+        setUnit("");
+        setQuantity("");
+        setExpirydate("");
+        setProductImage(null);
+
         // 🔄 Fetch updated product list directly after adding a product
         const updatedResponse = await axios.get(
-          "http://localhost:5000/api/product/getproducts"
+          `${API_URL}/api/product/getproducts`
         );
         setData(updatedResponse.data.products);
 
@@ -228,7 +241,7 @@ const Product = () => {
     setEditProductImage(null);
     setEditImagePreview(
       product.ProImage
-        ? `http://localhost:5000/uploads/${product.ProImage}`
+        ? product.ProImage
         : ""
     );
     setSelectedProductId(product._id);
@@ -258,7 +271,7 @@ const Product = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/product/updateproduct/${selectedProductId}`,
+        `${API_URL}/api/product/updateproduct/${selectedProductId}`,
         {
           method: "PUT",
           body: formData,
@@ -272,7 +285,7 @@ const Product = () => {
 
         // 🔄 Fetch updated product list directly after updating a product
         const updatedResponse = await axios.get(
-          "http://localhost:5000/api/product/getproducts"
+          `${API_URL}/api/product/getproducts`
         );
         setData(updatedResponse.data.products);
 
@@ -342,7 +355,7 @@ const Product = () => {
       name: "Image",
       cell: (row) => (
         <img
-          src={`http://localhost:5000/uploads/${row.ProImage}`}
+          src={row.ProImage}
           alt={row.ProductName}
           style={{
             width: "75px",
@@ -470,7 +483,7 @@ const Product = () => {
             </span>
             <h3 className="modal-title">{selectedProduct.ProductName}</h3>
             <img
-              src={`http://localhost:5000/uploads/${selectedProduct.ProImage}`}
+              src={selectedProduct.ProImage}
               alt={selectedProduct.ProductName}
               className="modal-image"
             />
@@ -704,7 +717,7 @@ const Product = () => {
                 <label className="floating-label">Category</label>
 
                 {/* Dropdown List */}
-                {showDropdown && filteredCategories.length > 0 && (
+                {/* {showDropdown && filteredCategories.length > 0 && (
                   <ul className="dropdown-list">
                     {filteredCategories.map((cat, index) => (
                       <li
@@ -715,7 +728,7 @@ const Product = () => {
                         onMouseEnter={() => setActiveCategoryIndex(index)}
                         onClick={() => {
                           setCategory(cat.categoryName);
-                          setError(""); // Clear error on valid selection
+                          setError("");  
                           setShowDropdown(false);
                         }}
                       >
@@ -724,8 +737,7 @@ const Product = () => {
                     ))}
                   </ul>
                 )}
-
-                {/* Error Message */}
+ 
                 {error && <p className="error-message">{error}</p>}
               </div>
               <div
@@ -739,8 +751,8 @@ const Product = () => {
                   value={category}
                   onChange={(e) => {
                     setCategory(e.target.value);
-                    setError(""); // Clear error when typing
-                    setActiveCategoryIndex(-1); // Reset active index on input change
+                    setError("");  
+                    setActiveCategoryIndex(-1); 
                   }}
                   onKeyDown={(e) => {
                     if (e.key === "ArrowDown") {
@@ -758,14 +770,13 @@ const Product = () => {
                       setCategory(
                         filteredCategories[activeCategoryIndex].categoryName
                       );
-                      setError(""); // Clear error on valid selection
+                      setError("");  
                       setShowDropdown(false);
                     }
                   }}
                   onFocus={() => setShowDropdown(true)}
                   onBlur={() => {
-                    setTimeout(() => setShowDropdown(false), 200); // Delay to allow click selection
-                    // Validation: Check if entered category exists in dropdown
+                    setTimeout(() => setShowDropdown(false), 200);  
                     const isCategoryValid = filteredCategories.some(
                       (cat) =>
                         cat.categoryName.toLowerCase() ===
@@ -779,7 +790,7 @@ const Product = () => {
                     }
                   }}
                 />
-                <label className="floating-label">Category</label>
+                <label className="floating-label">Category</label> */}
 
                 {/* Dropdown List */}
                 {showDropdown && filteredCategories.length > 0 && (

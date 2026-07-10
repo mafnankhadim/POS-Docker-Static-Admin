@@ -22,6 +22,8 @@ import {
 import "./Sidebar.css";
 import defaultLogo from "../../assets/images/pos-logo.png";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const Sidebar = () => {
   const [activeDropdown, setActiveDropdown] = useState(null);
   const location = useLocation();
@@ -32,11 +34,11 @@ const Sidebar = () => {
     const fetchLogo = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/detail/getDetail"
+          `${API_URL}/api/detail/getDetail`
         );
 
         if (response.data.length > 0 && response.data[0].logo) {
-          setLogo(`http://localhost:5000${response.data[0].logo}`); // Fix
+          setLogo(response.data[0].logo); // Fix
         }
       } catch (error) {
         console.error("Error fetching logo:", error);

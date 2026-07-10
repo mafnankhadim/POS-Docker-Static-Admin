@@ -6,6 +6,8 @@ import { FaEye, FaDownload } from "react-icons/fa";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const getFirstDayOfMonth = () => {
   const now = new Date();
   return new Date(now.getFullYear(), now.getMonth(), 1).toLocaleDateString(
@@ -34,7 +36,7 @@ const InvoiceReport = () => {
 
       try {
         const response = await fetch(
-          `http://localhost:5000/api/invoice/getInvoicesByDateRange?startDate=${startDate}&endDate=${endDate}`
+          `${API_URL}/api/invoice/getInvoicesByDateRange?startDate=${startDate}&endDate=${endDate}`
         );
 
         if (!response.ok) {
@@ -55,7 +57,7 @@ const InvoiceReport = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/detail/getDetail")
+      .get(`${API_URL}/api/detail/getDetail`)
       .then((response) => {
         if (response.data.length > 0) {
           setStoreDetails(response.data[0]); // Assuming there's only one store detail
@@ -65,6 +67,19 @@ const InvoiceReport = () => {
         console.error("Error fetching store details", error);
       });
   }, []);
+
+  const handleKeyPress = (e) => {
+    if (e.key === "Escape" && isModalOpen) {
+      setIsModalOpen(false); // Close the modal when Escape is pressed
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyPress);
+    return () => {
+      window.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [isModalOpen]);
 
   const highlightText = (text, searchText) => {
     if (!searchText || !text) return text;

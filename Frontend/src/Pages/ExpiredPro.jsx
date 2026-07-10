@@ -4,6 +4,8 @@ import { FaEdit } from "react-icons/fa";
 import axios from "axios";
 import "../Styles/ExpiredPro.css";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const ExpiredPro = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -16,7 +18,7 @@ const ExpiredPro = () => {
     const fetchExpiredProducts = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/product/expired-products"
+          `${API_URL}/api/product/expired-products`
         );
         setData(response.data.expiredProducts);
       } catch (error) {
@@ -48,13 +50,13 @@ const ExpiredPro = () => {
 
     try {
       await axios.put(
-        `http://localhost:5000/api/product/update-expiredproduct/${selectedProduct._id}`,
+        `${API_URL}/api/product/update-expiredproduct/${selectedProduct._id}`,
         { ExpiryDate: updatedExpiryDate }
       );
 
       // Re-fetch expired products from backend
       const response = await axios.get(
-        "http://localhost:5000/api/product/expired-products"
+        `${API_URL}/api/product/expired-products`
       );
       setData(response.data.expiredProducts); // Update state with fresh data
 
@@ -114,7 +116,7 @@ const ExpiredPro = () => {
         <img
           src={
             row.ProImage
-              ? `http://localhost:5000/uploads/${row.ProImage}`
+              ? row.ProImage
               : "/default-image.png"
           }
           alt={row.ProductName}

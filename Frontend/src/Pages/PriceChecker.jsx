@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import "../Styles/PriceChecker.css";
 import placeholderImage from "../assets/images/product-placeholder.jpg";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const PriceChecker = () => {
   const [barcode, setBarcode] = useState("");
   const [search, setSearch] = useState("");
@@ -10,19 +12,20 @@ const PriceChecker = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const barcodeInputRef = useRef(null);
   const searchInputRef = useRef(null);
+  const searchBarCodeRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(-1);
   const addToCartBtnRef = useRef(null);
 
   // Fetch products from the API
   useEffect(() => {
-    fetch("http://localhost:5000/api/product/getproducts")
+    fetch(`${API_URL}/api/product/getproducts`)
       .then((response) => response.json())
       .then((data) => {
         const productsFromAPI = data.products.map((product) => ({
           id: product._id,
           name: product.ProductName,
           image: product.ProImage
-            ? `http://localhost:5000/uploads/${product.ProImage}`
+            ? product.ProImage
             : placeholderImage,
           price: product.RetailPrice,
           category: product.Category,
@@ -36,7 +39,11 @@ const PriceChecker = () => {
       .catch((error) => console.error("Error fetching products:", error));
   }, []);
 
-  // Focus barcode input on mount
+  const setRefs = (element) => {
+    barcodeInputRef.current = element;
+    searchBarCodeRef.current = element;
+  };
+
   useEffect(() => {
     if (barcodeInputRef.current) {
       barcodeInputRef.current.focus();
@@ -109,7 +116,12 @@ const PriceChecker = () => {
   const handleKeyPress = (e) => {
     if (e.shiftKey && e.key.toLowerCase() === "s") {
       e.preventDefault();
-      searchInputRef.current?.focus(); // Focus on Search Product field
+      searchInputRef.current?.focus();
+    }
+
+    if (e.shiftKey && e.key.toLowerCase() === "b") {
+      e.preventDefault();
+      searchBarCodeRef.current?.focus();
     }
   };
 
@@ -126,14 +138,16 @@ const PriceChecker = () => {
 
       {/* Barcode Input */}
       <div className="input-group-container">
-        <label className="input-label-text">Scan or Enter Barcode</label>
+        <label className="input-label-text">
+          Scan or Enter Barcode<span className="shortcut-box">Shift + B</span>
+        </label>
         <input
           type="number"
           className="input-field-box"
           placeholder="Scan Barcode"
           value={barcode}
           onChange={handleBarcodeSearch}
-          ref={barcodeInputRef}
+          ref={setRefs}
         />
       </div>
 

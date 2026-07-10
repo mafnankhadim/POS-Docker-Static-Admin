@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 import logo from "../../assets/images/black-pos-logo.png";
+
+const API_URL = import.meta.env.VITE_API_URL;
 // import "./Login.css";
 
 const Register = () => {
@@ -25,7 +27,7 @@ const Register = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/register",
+        `${API_URL}/api/auth/register`,
         {
           username,
           password,

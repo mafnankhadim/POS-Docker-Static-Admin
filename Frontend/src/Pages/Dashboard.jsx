@@ -12,6 +12,8 @@ import {
 } from "react-icons/fa";
 import "../Styles/Dashboard.css";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const Dashboard = () => {
   const [totalRevenue, setTotalRevenue] = useState(0);
   const [totalProducts, setTotalProducts] = useState(0);
@@ -42,10 +44,10 @@ const Dashboard = () => {
           invoiceStatsRes,
           categoryStatsRes,
         ] = await Promise.all([
-          fetch("http://localhost:5000/api/product/productstats"),
-          fetch("http://localhost:5000/api/invoice/salesstats"),
-          fetch("http://localhost:5000/api/invoice/getInvoiceStats"),
-          fetch("http://localhost:5000/api/category/totalcategories"),
+          fetch(`${API_URL}/api/product/productstats`),
+          fetch(`${API_URL}/api/invoice/salesstats`),
+          fetch(`${API_URL}/api/invoice/getInvoiceStats`),
+          fetch(`${API_URL}/api/category/totalcategories`),
         ]);
 
         const [productStats, salesStats, invoiceStats, categoryStats] =

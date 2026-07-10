@@ -4,6 +4,8 @@ import logo from "../../assets/images/black-pos-logo.png";
 import { Link } from "react-router-dom";
 import "./Login.css";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -19,7 +21,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
+        `${API_URL}/api/auth/login`,
         {
           username,
           password,

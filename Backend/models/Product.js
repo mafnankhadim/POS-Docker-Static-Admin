@@ -12,6 +12,7 @@ const productSchema = new mongoose.Schema(
     Unit: { type: String, required: true },
     Quantity: { type: Number, required: true, default: 0 },
     ExpiryDate: { type: Date },
+    sold: { type: Number, default: 0 },
   },
   { timestamps: true }
 );

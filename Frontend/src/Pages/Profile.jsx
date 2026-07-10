@@ -4,6 +4,8 @@ import defaultLogo from "../assets/images/black-pos-logo.png";
 import { FaCamera } from "react-icons/fa";
 import axios from "axios";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const Profile = () => {
   const [userDetails, setUserDetails] = useState({
     username: "",
@@ -31,7 +33,7 @@ const Profile = () => {
         }
 
         const response = await axios.get(
-          "http://localhost:5000/api/auth/getuser",
+          `${API_URL}/api/auth/getuser`,
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
@@ -53,7 +55,7 @@ const Profile = () => {
     const fetchStoreDetails = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/detail/getDetail"
+          `${API_URL}/api/detail/getDetail`
         );
 
         if (response.data.length > 0) {
@@ -64,7 +66,7 @@ const Profile = () => {
             setEditedStoreName(storeName); // Sync edited store name with actual store name
           }
 
-          if (logo) setLogo(`http://localhost:5000${logo}`);
+          if (logo) setLogo(logo);
           else console.warn("Logo not found in API response.");
         }
       } catch (error) {
@@ -124,7 +126,7 @@ const Profile = () => {
 
       // Send request with FormData
       const storeResponse = await axios.put(
-        "http://localhost:5000/api/detail/updateDetail",
+        `${API_URL}/api/detail/updateDetail`,
         formData,
         {
           headers: {
@@ -179,7 +181,7 @@ const Profile = () => {
 
     try {
       const response = await axios.put(
-        "http://localhost:5000/api/auth/updateuser",
+        `${API_URL}/api/auth/updateuser`,
         {
           oldPassword: userDetails.oldPassword,
           password: userDetails.newPassword,

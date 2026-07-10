@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import axios from "axios";
 import "./Detail.css";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const Detail = () => {
   const [storeName, setStoreName] = useState("");
   const [email, setEmail] = useState("");
@@ -39,7 +41,7 @@ const Detail = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/Detail/addDetail",
+        `${API_URL}/api/Detail/addDetail`,
         formData,
         {
           headers: { "Content-Type": "multipart/form-data" },

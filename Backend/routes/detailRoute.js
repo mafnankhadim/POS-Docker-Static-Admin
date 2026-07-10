@@ -1,29 +1,17 @@
 const express = require("express");
-const multer = require("multer");
 const Detail = require("../models/Detail");
 const Login = require("../models/Login");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const upload = require("../middlewares/upload");
 
 const router = express.Router();
-
-// Multer storage for logo uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "StoreDetail/");
-  },
-  filename: (req, file, cb) => {
-    cb(null, Date.now() + "-" + file.originalname);
-  },
-});
-
-const upload = multer({ storage });
 
 // POST Add Store Details
 router.post("/addDetail", upload.single("logo"), async (req, res) => {
   try {
     const { storeName, contactNo, email, address } = req.body;
-    const logo = req.file ? `/StoreDetail/${req.file.filename}` : null;
+    const logo = req.file ? req.file.path : null;
 
     // Check if store details already exist
     let existingDetail = await Detail.findOne();
@@ -66,7 +54,7 @@ router.put("/updateDetail", upload.single("logo"), async (req, res) => {
   try {
     const { storeName, contactNo, email, address, currentPassword, username } =
       req.body;
-    const logo = req.file ? `/StoreDetail/${req.file.filename}` : null;
+    const logo = req.file ? req.file.path : null;
 
     // Fetch store details
     let existingDetail = await Detail.findOne();

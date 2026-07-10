@@ -6,6 +6,8 @@ import "../Styles/Invoice.css";
 import { FaEye, FaEdit, FaTrash, FaPrint } from "react-icons/fa";
 import logo from "../assets/images/black-pos-logo.png";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const Invoice = () => {
   const [searchText, setSearchText] = useState("");
   const [data, setData] = useState([]);
@@ -20,7 +22,7 @@ const Invoice = () => {
     const fetchInvoices = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/api/invoice/getinvoices"
+          `${API_URL}/api/invoice/getinvoices`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch invoices");
@@ -39,7 +41,7 @@ const Invoice = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/detail/getDetail")
+      .get(`${API_URL}/api/detail/getDetail`)
       .then((response) => {
         if (response.data.length > 0) {
           setStoreDetails(response.data[0]); // Assuming there's only one store detail
@@ -61,7 +63,7 @@ const Invoice = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:5000/api/invoice/deleteinvoice/${id}`,
+        `${API_URL}/api/invoice/deleteinvoice/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -99,7 +101,7 @@ const Invoice = () => {
       console.log("Invoice ID received:", invoiceId);
 
       const response = await fetch(
-        `http://localhost:5000/api/invoice/getinvoice/${invoiceId}`
+        `${API_URL}/api/invoice/getinvoice/${invoiceId}`
       );
       if (!response.ok) throw new Error("Failed to fetch invoice");
 

@@ -4,6 +4,8 @@ import { FaEdit } from "react-icons/fa";
 import axios from "axios";
 import "../Styles/LowStock.css";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const LowStock = () => {
   const [searchText, setSearchText] = useState("");
   const [lowStockProducts, setLowStockProducts] = useState([]);
@@ -16,7 +18,7 @@ const LowStock = () => {
     const fetchLowStockProducts = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/product/lowstock"
+          `${API_URL}/api/product/lowstock`
         );
         setLowStockProducts(response.data.lowStockProducts || []);
       } catch (error) {
@@ -55,12 +57,12 @@ const LowStock = () => {
 
     try {
       await axios.put(
-        `http://localhost:5000/api/product/update-lowstock/${selectedProduct._id}`,
+        `${API_URL}/api/product/update-lowstock/${selectedProduct._id}`,
         { Quantity: updatedQuantity }
       );
 
       const response = await axios.get(
-        "http://localhost:5000/api/product/lowstock"
+        `${API_URL}/api/product/lowstock`
       );
       setLowStockProducts(response.data.lowStockProducts || []);
 
@@ -125,7 +127,7 @@ const LowStock = () => {
         <img
           src={
             row.ProImage
-              ? `http://localhost:5000/uploads/${row.ProImage}`
+              ? row.ProImage
               : "/default-image.png"
           }
           alt={row.ProductName}

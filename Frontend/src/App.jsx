@@ -29,6 +29,7 @@ import Detail from "./components/DetailPage/Detail";
 import Register from "./components/Register/Register";
 import AdminDashboard from "./components/Admin/AdminDashboard";
 import AdminLogin from "./components/Admin/AdminLogin";
+import Loader from "./components/Loader/Loader";
 
 const Layout = ({ children }) => {
   const location = useLocation();
@@ -58,6 +59,30 @@ const Layout = ({ children }) => {
 
 const App = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
+
+  // Loader for Refresh page
+  // useEffect(() => {
+  //   const timer = setTimeout(() => {
+  //     setLoading(false);
+  //   }, 1000);
+
+  //   return () => clearTimeout(timer);
+  // }, []);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    setLoading(true);
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [location.pathname]);
 
   useEffect(() => {
     const handleKeyPress = (e) => {
@@ -121,6 +146,7 @@ const App = () => {
     }
   };
 
+  if (loading) return <Loader />;
   return (
     <>
       <Hint />
